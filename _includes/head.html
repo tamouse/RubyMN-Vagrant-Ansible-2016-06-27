@@ -1,0 +1,23 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>{{site.title}}</title>
+
+  <link rel="stylesheet" href="{{site.baseurl}}/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="{{site.baseurl}}/reveal.js/css/theme/{{site.reveal.theme}}.css">
+
+  <!-- Theme used for syntax highlighting of code -->
+  <link rel="stylesheet" href="{{site.baseurl}}/reveal.js/lib/css/{{site.reveal.codetheme}}.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '{{site.baseurl}}/reveal.js/css/print/pdf.css' : '{{site.baseurl}}/reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+  <!-- local styles -->
+  <link rel="stylesheet" href="{{site.baseurl}}/css/slide-styles.css" />
+</head>

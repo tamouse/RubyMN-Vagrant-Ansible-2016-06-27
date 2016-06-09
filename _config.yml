@@ -1,0 +1,22 @@
+title: My basic reveal presentation setup
+author:
+  name: Tamara Temple
+  email: tamouse@gmail.com
+  href: https://github.com/tamouse
+
+description: |
+
+  A basic slide presentation set up using jekyll and reveal.js
+
+baseurl: "/jekyll-reveal-presentation-starter-kit"
+
+markdown: kramdown
+reveal:
+  theme: moon
+  codetheme: zenburn
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - .sass-cache

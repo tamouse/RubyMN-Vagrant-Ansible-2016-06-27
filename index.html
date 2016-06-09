@@ -1,0 +1,8 @@
+---
+layout: default
+---
+<div class="slides">
+{% for slide in site.posts reversed %}
+{{ slide.output}}
+{% endfor %}
+</div><!-- .slides -->

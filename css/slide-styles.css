@@ -1,0 +1,33 @@
+@import url(https://fonts.googleapis.com/css?family=Oregano);
+.reveal h1,
+.reveal h2,
+.reveal h3,
+.reveal h4 {
+    font-family: 'Oregano', cursive;
+    text-transform: initial; 	/* over-ride reveal's uppercase */
+}
+
+footer.slide-footer {
+    position: fixed;
+    bottom: 0;
+    padding-bottom: 3px;
+    font-size: 16px !important;
+    width: 100%;
+}
+footer.slide-footer > .left,
+footer.slide-footer > .middle,
+footer.slide-footer > .right {
+    width: 32%;
+    display: inline-block;
+}
+footer.slide-footer > .left {
+    text-align: left;
+    padding-left: 10px;
+}
+footer.slide-footer > .middle {
+    text-align: center;
+}
+footer.slide-footer > .right {
+    text-align: right;
+    padding-right: 10px;
+}
