@@ -1,6 +1,7 @@
 ---
 layout: slide
-title: "Welcome"
 ---
 
-To my presentation...
+## {{site.title}}
+
+{{site.description}}

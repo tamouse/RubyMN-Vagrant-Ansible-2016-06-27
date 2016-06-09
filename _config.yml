@@ -1,14 +1,10 @@
-title: My basic reveal presentation setup
-author:
-  name: Tamara Temple
-  email: tamouse@gmail.com
-  href: https://github.com/tamouse
+title: Vagrant + Ansible
 
 description: |
 
-  A basic slide presentation set up using jekyll and reveal.js
+  How we used Vagrant plus Ansible to provision our project from development out to production.
 
-baseurl: "/jekyll-reveal-presentation-starter-kit"
+baseurl: "/RubyMN-Vagrant-Ansible-2016-06-27"
 
 markdown: kramdown
 reveal:
