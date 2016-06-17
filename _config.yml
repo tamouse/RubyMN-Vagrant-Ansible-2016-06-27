@@ -4,9 +4,18 @@ description: |
 
   How we used Vagrant plus Ansible to provision our project from development out to production.
 
-baseurl: "/RubyMN-Vagrant-Ansible-2016-06-27"
+## Override for publication in `_config_publish.yml`
+url: ""
+baseurl: ""
+
+collections:
+  - slides
 
 markdown: kramdown
+kramdown:
+  input: GFM
+  parse_block_html: true
+
 reveal:
   theme: moon
   codetheme: zenburn
