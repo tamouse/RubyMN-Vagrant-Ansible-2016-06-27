@@ -2,7 +2,8 @@
 layout: default
 ---
 <div class="slides">
-{% for slide in site.posts reversed %}
+{% for slide in site.slides %}
 {{ slide.output}}
 {% endfor %}
+{% include footer.html %}
 </div><!-- .slides -->

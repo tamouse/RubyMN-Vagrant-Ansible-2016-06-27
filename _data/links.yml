@@ -1,0 +1,6 @@
+## A place to store presentation links, such as to the slides, the print version, project files, etc.
+
+slides:
+  long: "https://tamouse.github.io/jekyll-reveal.js-presentation-starter-kit"
+print:
+  long: "https://tamouse.github.io/jekyll-reveal.js-presentation-starter-kit/print.html"
