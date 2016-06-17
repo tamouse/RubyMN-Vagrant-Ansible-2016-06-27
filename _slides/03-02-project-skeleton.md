@@ -7,7 +7,7 @@ layout: slide
 
 ### Thor project template
 
-<pre><code class="command-line"> README.md.tt
+<pre><code class="nohighlight"> README.md.tt
  Vagrantfile.tt
  ansible.cfg
  provisioning/

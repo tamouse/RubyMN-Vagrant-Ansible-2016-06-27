@@ -3,7 +3,7 @@ layout: slide
 
 ---
 
-## Creating a new project now consists of 4 automated steps:
+## Creating a new project now consists of 4 semi-automated steps:
 
 1. run thor script
 2. in project dir: `vagrant up --provision`

@@ -5,7 +5,7 @@ layout: slide
 
 ## Ansible Configuration
 
-<pre><code class="yaml">[defaults]
+<pre><code class="ini">[defaults]
 roles_path = ./provisioning/roles
 
 [ssh_connection]

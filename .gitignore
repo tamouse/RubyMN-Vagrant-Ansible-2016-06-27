@@ -4,3 +4,4 @@ _site
 Gemfile.lock
 bin/*
 !bin/setup.sh
+tmp/

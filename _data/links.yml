@@ -2,5 +2,6 @@
 
 slides:
   long: "https://tamouse.github.io/jekyll-reveal.js-presentation-starter-kit"
+  qr_code: "images/presentation-slides-qr-code.png"
 print:
   long: "https://tamouse.github.io/jekyll-reveal.js-presentation-starter-kit/print.html"
