@@ -10,7 +10,10 @@
 
 .reveal pre {
     font-size: 0.8em;
+    width: 100%;
 }
+
+.reveal code { color: white; }
 
 footer.slide-footer {
     position: fixed;
