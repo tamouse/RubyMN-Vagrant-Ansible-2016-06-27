@@ -15,6 +15,10 @@
 
 .reveal code { color: white; }
 
+.reveal .left-align { text-align: left; }
+.reveal .center-align { text-align: center; }
+.reveal .right-align { text-align: right; }
+
 footer.slide-footer {
     position: fixed;
     bottom: 0;

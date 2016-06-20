@@ -1,0 +1,57 @@
+---
+layout: slide
+
+---
+
+%section
+  %h2 What's in the `provisioning/` directory?
+
+  %pre
+    %code.nohighlight
+      :preserve
+        bin/
+        bootstrap.yml
+        configure.yml
+        deploy.yml
+        group_vars/
+        inventories/
+        roles/
+
+%section
+  :markdown
+    ## `bin/` directory
+
+    The `bin/` directory contains shell scripts to make working out to the remove environments simple:
+
+    * `bootstrap` - set up initial servers environment, sshd, etc
+    * `configure` - provision the servers
+    * `deploy` - deploy the application
+
+%section
+  :markdown
+    ## YAML Playbook files
+
+    * `bootstrap.yml` - steps to perform the initial servers environment setup
+    * `configure.yml` - the main playbook to run, runs the other playbooks for provisioning the servers
+    * `deploy.yml` - the deployment playbook
+
+%section
+  :markdown
+    ## Group Variables `group_vars/` directory
+
+    * Contains the variable files, in YAML format.
+    * The files may be plain text, or encrypted (vaults).
+    * One for each environment.
+
+%section
+  :markdown
+    ## `inventories/`
+
+    * Inventories are the list of hosts/servers.
+    * One per environment.
+
+%section
+  :markdown
+    ## `roles/`
+
+    * The roles are the packages to be provisioned.
