@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <p>
+      <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Vagrant + Ansible</title>
+
+  <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/reveal.css">
+  <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/theme/moon.css">
+
+  <!-- Theme used for syntax highlighting of code -->
+  <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/lib/css/zenburn.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? '/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/print/pdf.css' : '/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+
+  <!-- local styles -->
+  <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/css/slide-styles.css" />
+</head>
+
+    </p>
+    <div class='reveal'>
+      <div class="slides">
+
+<section class=''>
+  <h1>Welcome!</h1>
+<h3>Vagrant + Ansible</h3>
+<p></p>
+How we used Vagrant plus Ansible to provision our project from development out to production.
+<p>
+  <img alt='QR Code for Slides' class='qr-code' src='/RubyMN-Vagrant-Ansible-2016-06-27/images/presentation-slides-qr-code.png'>
+</p>
+
+</section>
+
+
+<section class=''>
+  <h1 id="links">Links</h1>
+
+<ul>
+  <li><strong>Slides:</strong> <a href="https://tamouse.github.io/RubyMN-Vagrant-Ansible-2016-06-27/">https://tamouse.github.io/RubyMN-Vagrant-Ansible-2016-06-27/</a></li>
+  <li><strong>Repo:</strong> <a href="https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27">https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27</a></li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="the-situation">The Situation</h2>
+
+<ul>
+  <li>We already used Vagrant extensively in our project dewelopment</li>
+  <li>I had written a Vagrant + Ansible starter kit and had been using it for setting up dev environments at work, which got some interest</li>
+  <li>We were starting a set of new Rails-backed projects with various clients</li>
+  <li>We wanted to use a more streamlined and modern approach to bootstrapping, provisioning, and deployment</li>
+  <li>Ansible is pretty easy to learn</li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="necessary-parts">Necessary Parts</h2>
+
+<p>The usual suspects:</p>
+
+<ul>
+  <li>VirtualBox</li>
+  <li>Vagrant</li>
+  <li>Ansible (installed easily on a Mac with HomeBrew)</li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="what-is-ansible">What is Ansible</h2>
+
+<p><a href="https://www.ansible.com/">Ansible</a> is really a collection of DevOps tools.</p>
+
+<ul>
+  <li>It lets you bootstrap, provision, and configure hardware (inventory).</li>
+  <li>You can using for deploying applications (in place of using capistrano, for example).</li>
+  <li>Lots of pre-existing modules, plugins, and an API.</li>
+  <li>Highly extensible</li>
+</ul>
+
+<h3 id="and-what-separates-it-from-the-others">And what separates it from the others:</h3>
+
+<ul>
+  <li>Configuration is in simple, plain text files (ini and yaml).</li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="initial-approach">Initial Approach</h2>
+
+<ul>
+  <li>Our initial approach was to create a shell script, with static elements, that were edited before execution</li>
+  <li>This proved unweildy when going from the first to the second project startup</li>
+  <li>It was very useful in prototyping what we wanted</li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="second-approach-thor-generator">Second Approach: Thor Generator</h2>
+
+<p class="left-align">Seeing the ridiculousness of our ways and the wisdom in our fumbling, I wrote up a Thor Generator.</p>
+
+<ul>
+  <li>Specify destination, i.e. run anywhere</li>
+  <li>Site Template: Ansible config, Vagrantfile, provisioning elements</li>
+  <li>Rails Template: bring in all standard project gems, configuration settings, initialize the app</li>
+  <li>Initialize project specifics, variables, etc.</li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2 id="creating-a-new-project-now-consists-of-4-semi-automated-steps">Creating a new project now consists of 4 semi-automated steps:</h2>
+
+<ol>
+  <li>run thor script</li>
+  <li>in project dir: <code class="highlighter-rouge">vagrant up --provision</code></li>
+  <li>in project dir: <code class="highlighter-rouge">vagrant ssh</code></li>
+  <li>
+    <p>on the VM, in the <code class="highlighter-rouge">/vagrant/</code> dir:</p>
+
+    <p><code class="highlighter-rouge">rails new . -m rails_template.rb</code></p>
+  </li>
+</ol>
+
+</section>
+
+
+<section class=''>
+  <h2 id="thor-script-actions">Thor Script Actions</h2>
+
+<ul>
+  <li>
+    <p>populate the new project destination from the <code class="highlighter-rouge">skeleton/</code> directory</p>
+  </li>
+  <li>
+    <p>run the Ansible requirements installation in the new project destination</p>
+  </li>
+</ul>
+
+</section>
+
+
+<section class=''>
+  <h2>Project Skeleton</h2>
+<h3>Thor project template</h3>
+<pre><code class='nohighlight'>README.md.tt
+Vagrantfile.tt
+ansible.cfg
+provisioning/
+rails_template.rb.tt</code></pre>
+
+</section>
+
+
+<section class=''>
+  <h2>Modifying the Vagrantfile</h2>
+<div class='left-align'>The following is added to the `dev` configuration section to make Ansible work locally:</div>
+<pre><code class='ruby'>dev.vm.provision :ansible do |a|&#x000A;  a.playbook = "provisioning/configure.yml"&#x000A;  a.inventory_path =&#x000A;    "provisioning/inventories/development"&#x000A;  a.verbose = "vvvv"&#x000A;  a.sudo = true&#x000A;end</code></pre>
+
+</section>
+
+
+<section class=''>
+  <h2>Ansible Configuration</h2>
+<pre><code class='ini'>[defaults]&#x000A;roles_path = ./provisioning/roles&#x000A;&#x000A;[ssh_connection]&#x000A;ssh_args = -o ForwardAgent=yes \&#x000A;  -o ControlMaster=auto \&#x000A;  -o ControlPersist=60s</code></pre>
+
+</section>
+
+
+<section class=''>
+  <section>
+  <h2>What's in the `provisioning/` directory?</h2>
+  <pre><code class='nohighlight'>bin/&#x000A;bootstrap.yml&#x000A;configure.yml&#x000A;deploy.yml&#x000A;group_vars/&#x000A;inventories/&#x000A;roles/&#x000A;</code></pre>
+</section>
+<section>
+  <h2 id="bin-directory"><code>bin/</code> directory</h2>
+  
+  <p>The <code>bin/</code> directory contains shell scripts to make working out to the remove environments simple:</p>
+  
+  <ul>
+    <li><code>bootstrap</code> - set up initial servers environment, sshd, etc</li>
+    <li><code>configure</code> - provision the servers</li>
+    <li><code>deploy</code> - deploy the application</li>
+  </ul>
+</section>
+<section>
+  <h2 id="yaml-playbook-files">YAML Playbook files</h2>
+  
+  <ul>
+    <li><code>bootstrap.yml</code> - steps to perform the initial servers environment setup</li>
+    <li><code>configure.yml</code> - the main playbook to run, runs the other playbooks for provisioning the servers</li>
+    <li><code>deploy.yml</code> - the deployment playbook</li>
+  </ul>
+</section>
+<section>
+  <h2 id="group-variables-groupvars-directory">Group Variables <code>group_vars/</code> directory</h2>
+  
+  <ul>
+    <li>Contains the variable files, in YAML format.</li>
+    <li>The files may be plain text, or encrypted (vaults).</li>
+    <li>One for each environment.</li>
+  </ul>
+</section>
+<section>
+  <h2 id="inventories"><code>inventories/</code></h2>
+  
+  <ul>
+    <li>Inventories are the list of hosts/servers.</li>
+    <li>One per environment.</li>
+  </ul>
+</section>
+<section>
+  <h2 id="roles"><code>roles/</code></h2>
+  
+  <ul>
+    <li>The roles are the packages to be provisioned.</li>
+  </ul>
+</section>
+
+</section>
+
+
+<section class=''>
+  <h2 id="the-requirements-role">The requirements role</h2>
+
+<p>The thor script runs the ansible command:</p>
+
+<pre><code class="bash">ansible-galaxy install -r requirements.yml --force</code></pre>
+
+<p>The <code class="highlighter-rouge">-r requirements.yml</code> looks for that file in the <code class="highlighter-rouge">roles_path</code> that was specified in <code class="highlighter-rouge">ansible.cfg</code>.</p>
+
+<p>This loads up the <strong>external</strong> requirements for the project. E.g.:</p>
+
+<pre><code class="yaml">- src: ANXS.postgresql
+  version: "v1.2.1"
+  path : external</code></pre>
+
+<p>which uses a pre-existing setup for Postgresql</p>
+
+</section>
+
+
+<section class=''>
+  <section>
+
+  <h2 id="changing-variables">Changing Variables</h2>
+
+  <ul>
+    <li>
+      <p>The variables for the project are contained under <code class="highlighter-rouge">provisioning/group_vars/</code> directory, named for the environment.</p>
+    </li>
+    <li>
+      <p>These files can be plain text, for environments you don’t need to keep secure.</p>
+    </li>
+    <li>
+      <p>Or they can be encrypted vault files when you do need to keep them secure. A vaulted file could be checked in to Github, for example.</p>
+    </li>
+  </ul>
+
+</section>
+
+<section>
+
+  <ul>
+    <li>
+      <p>In our case, we had a whole pile of variables, but most of them were already set during the thor script execution as we keep things fairly standard across projects.</p>
+    </li>
+    <li>
+      <p>Things like the application name, database names, paths to ruby, rails, and other tools are all standardly placed, and enumerated as variables in the scripts.</p>
+    </li>
+    <li>
+      <p>We wanted to keep this as similar as possible to reduce the time it takes to train people up moving from project to project.</p>
+    </li>
+  </ul>
+
+</section>
+
+<section>
+
+  <h2 id="our-convention-was-embedded-in-our-configuration">Our Convention was embedded in our Configuration</h2>
+
+</section>
+
+</section>
+
+
+<section class=''>
+  <h2 id="ready-for-provisioning">Ready for provisioning</h2>
+
+<p>After the thor script has finished, the new project directory has what it needs to start up</p>
+
+<pre><code class="bash">vagrant up --provider virtualbox --provision
+</code></pre>
+
+<p>This takes about 10 to 12 minutes.</p>
+
+<p>Then you can log in to the VM:</p>
+
+<pre><code class="bash">vagrant ssh
+</code></pre>
+
+</section>
+
+
+<section class=''>
+  <section>
+
+  <h2 id="initialize-the-rails-app">Initialize the Rails App</h2>
+
+  <p>With the VM provisioned and running, and having logged in,
+the new Rails app is initialized using the template.</p>
+
+  <p>The rails application root directory is sitting in <code class="highlighter-rouge">/vagrant/</code> on the VM,
+as per usual. The provisioning has created a symlink in the <code class="highlighter-rouge">/home/vagrant/</code>
+directory as well, using the name of the app.</p>
+
+</section>
+
+<section>
+
+  <p>The <code class="highlighter-rouge">rails new</code> command is run in the rails application directory:</p>
+
+  <pre><code class="bash">rails new . --template=rails_template.rb</code></pre>
+
+</section>
+
+</section>
+
+
+<section class=''>
+  <section>
+
+  <h2 id="changing-provisioning">Changing Provisioning</h2>
+
+  <ul>
+    <li>
+      <p>As we went along on the various projects, we found we needed different, additional packages</p>
+    </li>
+    <li>
+      <p>We also learned better ways to set up some of the existing packages and configurations</p>
+    </li>
+  </ul>
+
+</section>
+
+<section>
+
+  <ul>
+    <li>Installing additional playbooks, tasks, etc., only required re-provisioning the VM:</li>
+  </ul>
+
+  <pre><code class="bash">vagrant provision</code></pre>
+
+  <ul>
+    <li>This saved us tons of time, and kept our downstream provisioning and deployments clean as well</li>
+  </ul>
+
+</section>
+
+</section>
+
+
+<section class=''>
+  <section>
+  <h2 id="staging-and-further-deployments">Staging, and Further Deployments</h2>
+  
+  <ul>
+    <li>When we were ready to begin staging, we updated the appropriate inventory file under <code>provisioning/inventories/staging</code></li>
+    <li>This is an <code>ini</code> file, and contains the IP addresses of the staging host(s)</li>
+  </ul>
+</section>
+<section>
+  <pre><code class='ini'>[webservers]&#x000A;101.xxx.xxx.xxx&#x000A;&#x000A;[databases]&#x000A;101.xxx.xxx.xxx&#x000A;&#x000A;[staging:children]&#x000A;webservers&#x000A;databases&#x000A;</code></pre>
+</section>
+<section>
+  <p>In the <code>provisioning/bin/</code> folder are scripts that run the Ansible commands to <strong>bootstrap</strong>, <strong>configure</strong>, and <strong>deploy</strong> the application to the appropriate environment, which makes it really simple:</p>
+  <pre><code class='bash'>provisioning/bin/deploy staging</code></pre>
+</section>
+<section>
+  <div class='left-align'>Which contains:</div>
+  <pre><code class='bash'>if [ -z "$1" ]; then&#x000A;  echo "Please specify an inventory/environment"&#x000A;  exit 1&#x000A;fi&#x000A;inventory=$1&#x000A;&#x000A;ansible-playbook \&#x000A;  --inventory-file=provisioning/inventories/$inventory \&#x000A;  --user deploy --ask-vault-pass \&#x000A;  --extra-vars '{"app_name":"xxx"}' -vvvv \&#x000A;  provisioning/deploy.yml</code></pre>
+</section>
+
+</section>
+
+
+<section class=''>
+  <section>
+
+  <h3 id="some-of-the-external-packages-we-used">Some of the External Packages We Used</h3>
+
+  <ul>
+    <li>ANXS.postgresql</li>
+    <li>DavidWittman.redis</li>
+    <li>geerlingguy.nodejs</li>
+    <li>jdauphant.nginx</li>
+  </ul>
+
+  <p>These are publicly available.</p>
+
+</section>
+
+<section>
+
+  <h3 id="ad-had-some-of-their-own">A&amp;D had some of their own:</h3>
+
+  <ul>
+    <li>common stuff – things like <code class="highlighter-rouge">build-essential</code>, <code class="highlighter-rouge">vim</code>, <code class="highlighter-rouge">emacs24</code>, etc</li>
+    <li>ruby – setting up <code class="highlighter-rouge">ruby-install</code>, installing the chosen version</li>
+  </ul>
+
+  <p>These are not publicly available, but they are dead simple.</p>
+
+</section>
+
+<section>
+
+  <h3 id="example-common-stuff">Example: common stuff</h3>
+
+  <pre><code class="yaml">---
+- name: update apt sources
+  sudo: yes
+  apt: update_cache=yes
+
+- name: install essential software via apt
+  sudo: true
+  apt: name={{ item.package }}
+  with_items:
+    - package: build-essential
+    - package: ntp
+    - package: git
+    - package: vim
+    - package: emacs24</code></pre>
+
+</section>
+
+<section>
+
+  <h3 id="example-ruby-install">Example: ruby-install</h3>
+
+  <pre><code class="yaml">---
+- name: update apt sources
+  sudo: yes
+  apt: update_cache=yes
+
+- name: install dependencies
+  sudo: true
+  apt: name={{ item.package }}
+  with_items:
+    - package: nodejs
+    - package: libyaml-dev
+    - package: libxml2-dev
+    - package: libxslt-dev
+
+- name: create source directory
+  sudo: true
+  shell: mkdir -p /usr/local/src creates=/usr/local/src
+
+- name: clone ruby-install
+  sudo: true
+  git: repo=https://github.com/postmodern/ruby-install.git dest=/usr/local/src/ruby-install update=yes
+
+- name: install ruby-install
+  sudo: true
+  command: make install chdir=/usr/local/src/ruby-install creates=/usr/local/bin/ruby-install
+
+- name: install rubies
+  sudo: true
+  command: /usr/local/bin/ruby-install ruby {{ ruby_version }} creates={{ ruby_path }}
+
+- name: install bundler
+  sudo: true
+  command: /opt/rubies/ruby-{{ ruby_version }}/bin/gem install bundler --no-user-install --no-document
+</code></pre>
+
+</section>
+
+</section>
+
+
+<section class=''>
+  <h1 id="thanks">Thanks!</h1>
+
+<ul>
+  <li>Tamara Temple</li>
+  <li>Email: <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;</a></li>
+  <li>Github: <a href="https://github.com/tamouse">tamouse</a></li>
+  <li>Twitter: <a href="https://twitter.com/tamouse">@tamouse</a></li>
+  <li>WWW: <a href="http://www.tamouse.org">http://www.tamouse.org</a></li>
+</ul>
+
+</section>
+
+
+<footer class="slide-footer">
+  <div class="left">Vagrant + Ansible</div>
+  <div class="middle">
+    <a href="http://www.tamouse.org"
+       target="_blank"
+       title="Tamara Temple"
+       >
+      Tamara Temple
+    </a>
+  </div>
+  <div class="right">
+    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+
+  </div>
+</footer>
+
+</div><!-- .slides -->
+
+    </div>
+    <!-- .reveal -->
+    <script src="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/lib/js/head.min.js"></script>
+<script src="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/js/reveal.js"></script>
+<script src="/RubyMN-Vagrant-Ansible-2016-06-27/js/revealConfig.js"></script>
+
+  </body>
+</html>
