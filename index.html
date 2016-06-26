@@ -5,7 +5,7 @@
       <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Vagrant + Ansible</title>
+  <title></title>
 
   <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/reveal.css">
   <link rel="stylesheet" href="/RubyMN-Vagrant-Ansible-2016-06-27/reveal.js/css/theme/moon.css">
@@ -31,13 +31,10 @@
       <div class="slides">
 
 <section class=''>
-  <h1>Welcome!</h1>
-<h3>Vagrant + Ansible</h3>
-<p></p>
-How we used Vagrant plus Ansible to provision our project from development out to production.
-<p>
-  <img alt='QR Code for Slides' class='qr-code' src='/RubyMN-Vagrant-Ansible-2016-06-27/images/presentation-slides-qr-code.png'>
-</p>
+  <h2>Welcome!</h2>
+<h3>Using Vagrant & Ansible to Provision New Rails Projects</h3>
+<div class='small'>From development out to higher environments, we built a generator to provide us with a single set of tools and configurations that would last the life of the project, and give us a more accurate and controlled means of reaching production.</div>
+<img alt='QR Code for Slides' class='qr-code' src='/RubyMN-Vagrant-Ansible-2016-06-27/images/presentation-slides-qr-code.png'>
 
 </section>
 
@@ -47,115 +44,125 @@ How we used Vagrant plus Ansible to provision our project from development out t
 
 <ul>
   <li><strong>Slides:</strong> <a href="https://tamouse.github.io/RubyMN-Vagrant-Ansible-2016-06-27/">https://tamouse.github.io/RubyMN-Vagrant-Ansible-2016-06-27/</a></li>
-  <li><strong>Repo:</strong> <a href="https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27">https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27</a></li>
+  <li><strong>Slide Repo:</strong> <a href="https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27">https://github.com/tamouse/RubyMN-Vagrant-Ansible-2016-06-27</a></li>
+  <li><strong>Tool Repo:</strong> <a href="https://github.com/ackmann-dickenson/rails_template">https://github.com/ackmann-dickenson/rails_template</a></li>
 </ul>
 
 </section>
 
 
 <section class=''>
-  <h2 id="the-situation">The Situation</h2>
-
+  <h2>The Situation</h2>
 <ul>
-  <li>We already used Vagrant extensively in our project dewelopment</li>
-  <li>I had written a Vagrant + Ansible starter kit and had been using it for setting up dev environments at work, which got some interest</li>
-  <li>We were starting a set of new Rails-backed projects with various clients</li>
-  <li>We wanted to use a more streamlined and modern approach to bootstrapping, provisioning, and deployment</li>
-  <li>Ansible is pretty easy to learn</li>
+  <li>already using Vagrant extensively</li>
+  <li class='fragment'>I had built a Vagrant + Ansible development setup for 2 projects</li>
+  <li class='fragment'>starting several new Rails-backed projects</li>
+  <li class='fragment'>wanted a modern approach to bootstrapping, provisioning, and deployment</li>
+  <li class='fragment'>Ansible is pretty easy to learn</li>
 </ul>
 
 </section>
 
 
 <section class=''>
-  <h2 id="necessary-parts">Necessary Parts</h2>
-
-<p>The usual suspects:</p>
-
+  <h2>Necessary Parts</h2>
+<div class='left-align'>The usual suspects:</div>
 <ul>
   <li>VirtualBox</li>
-  <li>Vagrant</li>
-  <li>Ansible (installed easily on a Mac with HomeBrew)</li>
+  <li class='fragment'>Vagrant</li>
+  <li class='fragment'>Ansible (installed easily on a Mac with HomeBrew)</li>
 </ul>
 
 </section>
 
 
 <section class=''>
-  <h2 id="what-is-ansible">What is Ansible</h2>
-
-<p><a href="https://www.ansible.com/">Ansible</a> is really a collection of DevOps tools.</p>
-
+  <h2>What is Ansible</h2>
+<p>
+  <a href='https://www.ansible.com/'>
+    Ansible
+  </a>
+  is really a collection of DevOps tools.
+</p>
 <ul>
   <li>It lets you bootstrap, provision, and configure hardware (inventory).</li>
-  <li>You can using for deploying applications (in place of using capistrano, for example).</li>
-  <li>Lots of pre-existing modules, plugins, and an API.</li>
-  <li>Highly extensible</li>
+  <li class='fragment'>You can using for deploying applications (in place of using capistrano, for example).</li>
+  <li class='fragment'>Lots of pre-existing modules, plugins, and an API.</li>
+  <li class='fragment'>Highly extensible</li>
 </ul>
-
-<h3 id="and-what-separates-it-from-the-others">And what separates it from the others:</h3>
-
-<ul>
-  <li>Configuration is in simple, plain text files (ini and yaml).</li>
-</ul>
+<div class='fragment'>
+  <h4>
+    And what separates it from the others:
+  </h4>
+  <ul>
+    <li>Configuration is in simple, plain text files (ini and yaml).</li>
+  </ul>
+</div>
 
 </section>
 
 
 <section class=''>
-  <h2 id="initial-approach">Initial Approach</h2>
-
+  <h2>Initial Approach</h2>
 <ul>
   <li>Our initial approach was to create a shell script, with static elements, that were edited before execution</li>
-  <li>This proved unweildy when going from the first to the second project startup</li>
-  <li>It was very useful in prototyping what we wanted</li>
+  <li class='fragment'>This proved unwieldy when going from the first to the second project startup</li>
+  <li class='fragment'>It was very useful in prototyping what we wanted</li>
 </ul>
 
 </section>
 
 
 <section class=''>
-  <h2 id="second-approach-thor-generator">Second Approach: Thor Generator</h2>
-
-<p class="left-align">Seeing the ridiculousness of our ways and the wisdom in our fumbling, I wrote up a Thor Generator.</p>
-
+  <h2>Second Approach: Thor Generator</h2>
+<div class='left-align'>Seeing the ridiculousness of our ways and the wisdom in our fumbling, I wrote up a Thor Generator.</div>
 <ul>
   <li>Specify destination, i.e. run anywhere</li>
-  <li>Site Template: Ansible config, Vagrantfile, provisioning elements</li>
-  <li>Rails Template: bring in all standard project gems, configuration settings, initialize the app</li>
-  <li>Initialize project specifics, variables, etc.</li>
+  <li class='fragment'>Site Template: Ansible config, Vagrantfile, provisioning elements</li>
+  <li class='fragment'>Rails Template: bring in all standard project gems, configuration settings, initialize the app</li>
+  <li class='fragment'>Initialize project specifics, variables, etc.</li>
 </ul>
 
 </section>
 
 
 <section class=''>
-  <h2 id="creating-a-new-project-now-consists-of-4-semi-automated-steps">Creating a new project now consists of 4 semi-automated steps:</h2>
-
+  <h2>Creating a new project now consists of 4 semi-automated steps:</h2>
 <ol>
-  <li>run thor script</li>
-  <li>in project dir: <code class="highlighter-rouge">vagrant up --provision</code></li>
-  <li>in project dir: <code class="highlighter-rouge">vagrant ssh</code></li>
   <li>
-    <p>on the VM, in the <code class="highlighter-rouge">/vagrant/</code> dir:</p>
-
-    <p><code class="highlighter-rouge">rails new . -m rails_template.rb</code></p>
+    run thor script:
+    <code>rails_template NAME --dest DEST_DIR</code>
   </li>
+  <li class='fragment'>
+    in project dir:
+    <code>vagrant up --provision</code>
+  </li>
+  <li class='fragment'>
+    in project dir:
+    <code>vagrant ssh</code>
+  </li>
+  <div class='fragment'>
+    <li>
+      on the VM, in the
+      <code><!-- vagrant/ --></code>
+      dir:
+      <code>rails new . -m rails_template.rb</code>
+    </li>
+  </div>
 </ol>
 
 </section>
 
 
 <section class=''>
-  <h2 id="thor-script-actions">Thor Script Actions</h2>
-
+  <h2>Thor Script Actions</h2>
 <ul>
   <li>
-    <p>populate the new project destination from the <code class="highlighter-rouge">skeleton/</code> directory</p>
+    populate the new project destination from the
+    <code>skeleton/</code>
+    directory
   </li>
-  <li>
-    <p>run the Ansible requirements installation in the new project destination</p>
-  </li>
+  <li class='fragment'>run the Ansible requirements installation in the new project destination</li>
 </ul>
 
 </section>
@@ -190,7 +197,7 @@ rails_template.rb.tt</code></pre>
 
 <section class=''>
   <section>
-  <h2>What's in the `provisioning/` directory?</h2>
+  <h2 id="whats-in-the-provisioning-directory">What's in the <code>provisioning/</code> directory?</h2>
   <pre><code class='nohighlight'>bin/&#x000A;bootstrap.yml&#x000A;configure.yml&#x000A;deploy.yml&#x000A;group_vars/&#x000A;inventories/&#x000A;roles/&#x000A;</code></pre>
 </section>
 <section>
@@ -263,86 +270,33 @@ rails_template.rb.tt</code></pre>
 
 <section class=''>
   <section>
-
-  <h2 id="changing-variables">Changing Variables</h2>
-
+  <h2>Changing Variables</h2>
   <ul>
-    <li>
-      <p>The variables for the project are contained under <code class="highlighter-rouge">provisioning/group_vars/</code> directory, named for the environment.</p>
+    <li class='fragment'>
+      The variables for the project are contained under
+      <code>provisioning/group_vars/</code>
+      directory, named for the environment.
     </li>
-    <li>
-      <p>These files can be plain text, for environments you don’t need to keep secure.</p>
-    </li>
-    <li>
-      <p>Or they can be encrypted vault files when you do need to keep them secure. A vaulted file could be checked in to Github, for example.</p>
-    </li>
+    <li class='fragment'>plain text or encyrpted vaults</li>
+    <li class='fragment'>vaults can be safely saved in a remote repo</li>
   </ul>
-
 </section>
-
 <section>
-
+  <h2>Standardize most configurable items</h2>
   <ul>
-    <li>
-      <p>In our case, we had a whole pile of variables, but most of them were already set during the thor script execution as we keep things fairly standard across projects.</p>
-    </li>
-    <li>
-      <p>Things like the application name, database names, paths to ruby, rails, and other tools are all standardly placed, and enumerated as variables in the scripts.</p>
-    </li>
-    <li>
-      <p>We wanted to keep this as similar as possible to reduce the time it takes to train people up moving from project to project.</p>
-    </li>
+    <li class='fragment'>application name</li>
+    <li class='fragment'>database names</li>
+    <li class='fragment'>deploy user</li>
+    <li class='fragment'>paths to binaries</li>
+    <li class='fragment'>development credentials and secrets</li>
   </ul>
-
 </section>
-
 <section>
-
-  <h2 id="our-convention-was-embedded-in-our-configuration">Our Convention was embedded in our Configuration</h2>
-
-</section>
-
-</section>
-
-
-<section class=''>
-  <h2 id="ready-for-provisioning">Ready for provisioning</h2>
-
-<p>After the thor script has finished, the new project directory has what it needs to start up</p>
-
-<pre><code class="bash">vagrant up --provider virtualbox --provision
-</code></pre>
-
-<p>This takes about 10 to 12 minutes.</p>
-
-<p>Then you can log in to the VM:</p>
-
-<pre><code class="bash">vagrant ssh
-</code></pre>
-
-</section>
-
-
-<section class=''>
-  <section>
-
-  <h2 id="initialize-the-rails-app">Initialize the Rails App</h2>
-
-  <p>With the VM provisioned and running, and having logged in,
-the new Rails app is initialized using the template.</p>
-
-  <p>The rails application root directory is sitting in <code class="highlighter-rouge">/vagrant/</code> on the VM,
-as per usual. The provisioning has created a symlink in the <code class="highlighter-rouge">/home/vagrant/</code>
-directory as well, using the name of the app.</p>
-
-</section>
-
-<section>
-
-  <p>The <code class="highlighter-rouge">rails new</code> command is run in the rails application directory:</p>
-
-  <pre><code class="bash">rails new . --template=rails_template.rb</code></pre>
-
+  <h2>
+    Our Convention was embedded
+    <br>
+    in our Configuration
+  </h2>
 </section>
 
 </section>
@@ -350,32 +304,18 @@ directory as well, using the name of the app.</p>
 
 <section class=''>
   <section>
-
-  <h2 id="changing-provisioning">Changing Provisioning</h2>
-
-  <ul>
-    <li>
-      <p>As we went along on the various projects, we found we needed different, additional packages</p>
-    </li>
-    <li>
-      <p>We also learned better ways to set up some of the existing packages and configurations</p>
-    </li>
-  </ul>
-
-</section>
-
-<section>
-
-  <ul>
-    <li>Installing additional playbooks, tasks, etc., only required re-provisioning the VM:</li>
-  </ul>
-
-  <pre><code class="bash">vagrant provision</code></pre>
-
-  <ul>
-    <li>This saved us tons of time, and kept our downstream provisioning and deployments clean as well</li>
-  </ul>
-
+  <h2>Ready for provisioning</h2>
+  <div class='fragment'>
+    <div class='left-align'>After the thor script has finished, the new project directory has what it needs to start up</div>
+    <pre><code class='bash'>vagrant up --provider virtualbox --provision</code></pre>
+  </div>
+  <div class='fragment'>
+    <div class='left-align'>This takes about 10 to 12 minutes.</div>
+  </div>
+  <div class='fragment'>
+    <div class='left-align'>Then you can log in to the VM:</div>
+    <pre><code class='bash'>vagrant ssh</code></pre>
+  </div>
 </section>
 
 </section>
@@ -383,23 +323,134 @@ directory as well, using the name of the app.</p>
 
 <section class=''>
   <section>
-  <h2 id="staging-and-further-deployments">Staging, and Further Deployments</h2>
-  
+  <h2>Application files location</h2>
   <ul>
-    <li>When we were ready to begin staging, we updated the appropriate inventory file under <code>provisioning/inventories/staging</code></li>
-    <li>This is an <code>ini</code> file, and contains the IP addresses of the staging host(s)</li>
+    <li class='fragment'>
+      The rails application root directory is sitting in
+      <code>/vagrant/</code>
+    </li>
+    <li class='fragment'>
+      The provisioning has created a symlink in the
+      <code>/home/vagrant/</code>
+    </li>
+    <li class='fragment'>
+      The symlink is the app name
+    </li>
   </ul>
 </section>
 <section>
+  <h2>Initialize the Rails App</h2>
+  <div class='fragment'>
+    <pre><code class='bash'>cd app_name&#x000A;rails new . -m rails_template.rb&#x000A;</code></pre>
+  </div>
+</section>
+<section>
+  <h1 class='center-align'>
+    YAY!
+  </h1>
+  <h2 class='fragment'>
+    An app is born!
+  </h2>
+</section>
+
+</section>
+
+
+<section class=''>
+  <section>
+  <h2>Changing Provisioning</h2>
+  <ul>
+    <li class='fragment'>As we went along on the various projects, we found we needed different, additional packages</li>
+    <li class='fragment'>We also learned better ways to set up some of the existing packages and configurations</li>
+  </ul>
+</section>
+<section>
+  <h2>Additional Playbooks</h2>
+  <div class='left-align'>We added new playbooks as we discovered new needs</div>
+  <ul>
+    <li class='fragment'>Internal</li>
+    <li class='fragment'>External</li>
+  </ul>
+</section>
+<section>
+  <h2>Easy re-provisioning</h2>
+  <pre><code class='bash'>vagrant provision</code></pre>
+</section>
+<section>
+  <h3>This saved us tons of time</h3>
+  <h3 class='fragment'>and kept our downstream provisioning and deployments clean as well</h3>
+</section>
+
+</section>
+
+
+<section class=''>
+  <section>
+  <h2>Staging, and Further Deployments</h2>
+  <ul>
+    <li class='fragment'>
+      Update the appropriate inventory file under
+      <code>provisioning/inventories/staging</code>
+    </li>
+    <li class='fragment'>
+      Update the environment variables in the file under
+      <code>provisioning/group_vars/staging</code>
+    </li>
+  </ul>
+</section>
+<section>
+  <h3>Inventory File</h3>
+  <div class='left-align'>
+    This is an
+    <code>ini</code>
+    file, and contains the IP addresses of the staging host(s)
+  </div>
   <pre><code class='ini'>[webservers]&#x000A;101.xxx.xxx.xxx&#x000A;&#x000A;[databases]&#x000A;101.xxx.xxx.xxx&#x000A;&#x000A;[staging:children]&#x000A;webservers&#x000A;databases&#x000A;</code></pre>
 </section>
 <section>
-  <p>In the <code>provisioning/bin/</code> folder are scripts that run the Ansible commands to <strong>bootstrap</strong>, <strong>configure</strong>, and <strong>deploy</strong> the application to the appropriate environment, which makes it really simple:</p>
+  <h3>Operating Environment Variables</h3>
+  <ul>
+    <li class='fragment'>
+      This is a YAML file specifying the settings to use in this environment.
+    </li>
+    <li class='fragment'>
+      For higher environments, these files are encrypted
+    </li>
+    <li class='fragment'>
+      Manipulate with the
+      <code>ansible-vault</code>
+      command.
+    </li>
+    <li class='fragment'>
+      <pre><code class='bash'>ansible-vault edit provisioning/group_vars/staging</code></pre>
+    </li>
+    <li class='fragment'>
+      Prompts for the password, then opens in
+      <code>$EDITOR</code>
+    </li>
+  </ul>
+</section>
+<section>
+  <h2>Provisioning Scripts</h2>
+  <div class='left-align'>
+    In the
+    <code>provisioning/bin/</code>
+    folder are scripts that run the Ansible commands to
+    <strong>bootstrap, configure, and deploy</strong>
+    the application to the appropriate environment, which makes it really simple:
+  </div>
   <pre><code class='bash'>provisioning/bin/deploy staging</code></pre>
 </section>
 <section>
   <div class='left-align'>Which contains:</div>
-  <pre><code class='bash'>if [ -z "$1" ]; then&#x000A;  echo "Please specify an inventory/environment"&#x000A;  exit 1&#x000A;fi&#x000A;inventory=$1&#x000A;&#x000A;ansible-playbook \&#x000A;  --inventory-file=provisioning/inventories/$inventory \&#x000A;  --user deploy --ask-vault-pass \&#x000A;  --extra-vars '{"app_name":"xxx"}' -vvvv \&#x000A;  provisioning/deploy.yml</code></pre>
+  <pre><code class='bash'>if [ -z "$1" ]; then&#x000A;  echo "Please specify an inventory/environment"&#x000A;  exit 1&#x000A;fi&#x000A;inventory=$1&#x000A;&#x000A;ansible-playbook \&#x000A;  --inventory-file=provisioning/inventories/$inventory \&#x000A;  --user deploy --ask-vault-pass \&#x000A;  --extra-vars '{"app_name":"xxx"}' -vvvv \&#x000A;  provisioning/deploy.yml&#x000A;</code></pre>
+</section>
+<section>
+  <h3>
+    The meat is in
+    <code>provisioning/deploy.yml</code>
+  </h3>
+  <pre class='fragment tiny'><code class='yaml'>---&#x000A;- hosts: webservers&#x000A;&#x000A;  roles:&#x000A;    - internal/deploy&#x000A;&#x000A;  tasks:&#x000A;    - set_fact: this_release_ts={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}&#x000A;    - set_fact: this_release_path={{ releases_path }}/{{ this_release_ts }}&#x000A;&#x000A;    - stat: path={{ current_release_path }}&#x000A;      register: current_dir&#x000A;&#x000A;    - debug: msg="New release path {{ this_release_path }}"&#x000A;&#x000A;    - debug: msg="current_dir exists? {{ current_dir.stat.exists }}"&#x000A;&#x000A;    - name: display maintenance page&#x000A;      copy:&#x000A;        src: roles/internal/deploy/files/maintenance.html&#x000A;        dest: "{{ current_release_path }}/maintenance.html"&#x000A;        force: yes&#x000A;      when: current_dir.stat.exists == True&#x000A;&#x000A;    - name: stop sidekiq&#x000A;      sudo: true&#x000A;      service: name=sidekiq-workers state=stopped&#x000A;      when: current_dir.stat.exists == True&#x000A;&#x000A;    - name: stop puma&#x000A;      sudo: true&#x000A;      service: name=puma state=stopped args="app={{ current_release_path }}"&#x000A;      when: current_dir.stat.exists == True&#x000A;&#x000A;    - name: create new release dir&#x000A;      file: path={{ this_release_path }} state=directory&#x000A;&#x000A;    - name: update code&#x000A;      git: repo={{ git_url }} dest={{ this_release_path }} version={{ git_version }} accept_hostkey=yes&#x000A;      register: git&#x000A;&#x000A;    - debug: msg='Updated repo from {{ git.before }} to {{ git.after }}'&#x000A;&#x000A;    - name: create shared dir&#x000A;      file: path={{ shared_path }} state=directory&#x000A;&#x000A;    - name: create shared sub-dirs&#x000A;      file: path={{ shared_path }}/{{ item }} state=directory&#x000A;      with_items:&#x000A;        - log&#x000A;        - tmp&#x000A;        - tmp/puma&#x000A;&#x000A;    - name: create config files&#x000A;      template:&#x000A;        src: "roles/internal/deploy/templates/{{ item }}.j2"&#x000A;        dest: "{{ this_release_path }}/{{ item }}"&#x000A;        force: yes&#x000A;      with_items:&#x000A;        - config/database.yml&#x000A;        - config/secrets.yml&#x000A;        - config/puma.rb&#x000A;&#x000A;    - name: symlink shared files&#x000A;      file:&#x000A;        src: "{{ shared_path }}/{{ item }}"&#x000A;        dest: "{{ this_release_path }}/{{ item }}"&#x000A;        state: link&#x000A;        force: yes&#x000A;      with_items:&#x000A;        - log/{{ rails_env }}.log&#x000A;        - log/sidekiq.log&#x000A;&#x000A;    - name: install gems&#x000A;      command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'&#x000A;      args:&#x000A;        chdir: '{{ this_release_path }}'&#x000A;&#x000A;    - name: precompile assets&#x000A;      command: "{{ ruby_path }}/bin/rake assets:precompile chdir={{ this_release_path }}"&#x000A;      environment:&#x000A;        RAILS_ENV: '{{ rails_env }}'&#x000A;&#x000A;    - name: migrate database&#x000A;      command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"&#x000A;      environment:&#x000A;        RAILS_ENV: '{{ rails_env }}'&#x000A;&#x000A;    - name: remove maintenance page&#x000A;      file: path={{ current_release_path }}/maintenance.html state=absent force=true&#x000A;&#x000A;    - name: symlink new release&#x000A;      file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes&#x000A;&#x000A;    - name: start puma&#x000A;      sudo: true&#x000A;      service: name=puma state=started args="app={{ current_release_path }}"&#x000A;&#x000A;    - name: start sidekiq&#x000A;      sudo: true&#x000A;      service: name=sidekiq-workers state=started&#x000A;&#x000A;    - name: cleanup&#x000A;      shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"&#x000A;      args:&#x000A;        chdir: '{{ releases_path }}'</code></pre>
 </section>
 
 </section>
@@ -500,21 +551,37 @@ directory as well, using the name of the app.</p>
 
 
 <section class=''>
-  <h1 id="thanks">Thanks!</h1>
-
-<ul>
-  <li>Tamara Temple</li>
-  <li>Email: <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;</a></li>
-  <li>Github: <a href="https://github.com/tamouse">tamouse</a></li>
-  <li>Twitter: <a href="https://twitter.com/tamouse">@tamouse</a></li>
-  <li>WWW: <a href="http://www.tamouse.org">http://www.tamouse.org</a></li>
-</ul>
+  <section>
+  <h3>Acknowledgements</h3>
+  <blockquote>
+    I want to acknowlege the great folks at
+    <a href='http://ackmann-dickenson.com'>Ackmann & Dickenson,</a>
+    <br>
+    especially
+    <b>Jason Bucki</b>
+    and
+    <b>Will Watson,</b>
+    for their great encouragement
+    <br>
+    and for opening up the tool to public access.
+  </blockquote>
+</section>
+<section>
+  <h3>Contact info</h3>
+  <ul>
+    <li>Tamara Temple</li>
+    <li>Email: <a href="&#109;&#097;&#105;&#108;&#116;&#111;:&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">&#116;&#097;&#109;&#111;&#117;&#115;&#101;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;</a></li>
+    <li>Github: <a href="https://github.com/tamouse">tamouse</a></li>
+    <li>Twitter: <a href="https://twitter.com/tamouse">@tamouse</a></li>
+    <li>WWW: <a href="http://www.tamouse.org">http://www.tamouse.org</a></li>
+  </ul>
+</section>
 
 </section>
 
 
 <footer class="slide-footer">
-  <div class="left">Vagrant + Ansible</div>
+  <div class="left">Vagrant+Ansible for Rails</div>
   <div class="middle">
     <a href="http://www.tamouse.org"
        target="_blank"
