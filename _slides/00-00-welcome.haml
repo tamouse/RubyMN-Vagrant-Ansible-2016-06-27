@@ -2,11 +2,10 @@
 layout: slide
 ---
 
-%h1 Welcome!
+%h2 Welcome!
 
-%h3 {{site.title}}
+%h3 {{site.data.presentation.title}}
 
-%p {{site.description}}
+.small {{site.data.presentation.description}}
 
-%p
-  %img{src: "{{site.baseurl}}/{{site.data.links.slides.qr_code}}", class: "qr-code",  alt: "QR Code for Slides"}
+%img{src: "{{site.baseurl}}/{{site.data.links.slides.qr_code}}", class: "qr-code",  alt: "QR Code for Slides"}

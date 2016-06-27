@@ -1,0 +1,28 @@
+---
+layout: slide
+
+---
+
+%h2 Creating a new project now consists of 4 semi-automated steps:
+
+%ol
+  %li
+    run thor script:
+    %code
+      rails_template NAME --dest DEST_DIR
+  %li.fragment
+    in project dir:
+    %code
+      vagrant up --provision
+  %li.fragment
+    in project dir:
+    %code
+      vagrant ssh
+  .fragment
+    %li
+      on the VM, in the
+      %code
+        /vagrant/
+      dir:
+      %code
+        rails new . -m rails_template.rb

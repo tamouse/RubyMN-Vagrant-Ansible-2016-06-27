@@ -12,6 +12,10 @@
     font-size: 0.8em;
     width: 100%;
 }
+.reveal pre.tiny {
+    font-size: 0.5em;
+    width: 100%;
+}
 
 .reveal code { color: white; }
 
@@ -43,3 +47,5 @@ footer.slide-footer > .right {
     text-align: right;
     padding-right: 10px;
 }
+
+.reveal .small { font-size: 85% }

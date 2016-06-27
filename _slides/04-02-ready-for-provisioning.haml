@@ -1,0 +1,23 @@
+---
+layout: slide
+
+---
+
+%section
+  %h2 Ready for provisioning
+
+  .fragment
+
+    .left-align After the thor script has finished, the new project directory has what it needs to start up
+
+    %pre
+      %code.bash vagrant up --provider virtualbox --provision
+
+  .fragment
+    .left-align This takes about 10 to 12 minutes.
+
+  .fragment
+    .left-align Then you can log in to the VM:
+
+    %pre
+      %code.bash vagrant ssh

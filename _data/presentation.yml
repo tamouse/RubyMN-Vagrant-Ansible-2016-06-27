@@ -1,0 +1,4 @@
+title: Using Vagrant & Ansible to Provision New Rails Projects
+description:  From development out to higher environments, we built a generator to provide us with a single set of tools and configurations that would last the life of the project, and give us a more accurate and controlled means of reaching production.
+footer:
+  title: Vagrant+Ansible for Rails

@@ -5,15 +5,21 @@ layout: slide
 
 %h2 Modifying the Vagrantfile
 
-.left-align The following is added to the `dev` configuration section to make Ansible work locally:
+.left-align The following is added to the provisioning configuration section to make Ansible work locally:
 
 %pre
   %code.ruby
     :preserve
-      dev.vm.provision :ansible do |a|
-        a.playbook = "provisioning/configure.yml"
-        a.inventory_path =
-          "provisioning/inventories/development"
-        a.verbose = "vvvv"
-        a.sudo = true
+      config.vm.provision :ansible do |ansible|
+        ansible.playbook = "provisioning/configure.yml"
+        ansible.groups = {
+          'webservers' => ['development'],
+          'databases'  => ['development'],
+          'development:children' => ['webservers', 'databases']
+        }
+        ansible.verbose = "vvvv"
+        ansible.sudo = true
+        ansible.extra_vars = {
+          app_name: "<%= @app_name %>"
+        }
       end

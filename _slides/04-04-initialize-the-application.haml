@@ -1,0 +1,37 @@
+---
+layout: slide
+
+---
+
+%section
+
+  %h2 Application files location
+
+  %ul
+    %li.fragment
+      The rails application root directory is sitting in
+      %code /vagrant/
+    %li.fragment
+      The provisioning has created a symlink in the
+      %code /home/vagrant/
+    %li.fragment
+      The symlink is the app name
+
+
+%section
+
+  %h2 Initialize the Rails App
+
+  .fragment
+    %pre
+      %code.bash
+        :preserve
+          cd app_name
+          rails new . -m rails_template.rb
+
+%section
+  %h1.center-align
+    YAY!
+
+  %h2.fragment
+    An app is born!

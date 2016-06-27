@@ -4,13 +4,23 @@ layout: slide
 ---
 
 %section
-  :markdown
-    ## Staging, and Further Deployments
-
-    * When we were ready to begin staging, we updated the appropriate inventory file under `provisioning/inventories/staging`
-    * This is an `ini` file, and contains the IP addresses of the staging host(s)
+  %h2 Staging, and Further Deployments
+  %ul
+    %li.fragment
+      Update the appropriate inventory file under
+      %code provisioning/inventories/staging
+    %li.fragment
+      Update the environment variables in the file under
+      %code provisioning/group_vars/staging
 
 %section
+
+  %h3 Inventory File
+
+  .left-align
+    This is an
+    %code ini
+    file, and contains the IP addresses of the staging host(s)
 
   %pre
     %code.ini
@@ -26,8 +36,39 @@ layout: slide
         databases
 
 %section
-  :markdown
-    In the `provisioning/bin/` folder are scripts that run the Ansible commands to **bootstrap**, **configure**, and **deploy** the application to the appropriate environment, which makes it really simple:
+  %h3 Operating Environment Variables
+
+  %ul
+    %li.fragment
+      This is a YAML file specifying the settings to use in this environment.
+
+    %li.fragment
+      For higher environments, these files are encrypted
+
+    %li.fragment
+      Manipulate with the
+      %code ansible-vault
+      command.
+
+    %li.fragment
+      %pre
+        %code.bash
+          ansible-vault edit provisioning/group_vars/staging
+
+    %li.fragment
+      Prompts for the password, then opens in
+      %code $EDITOR
+
+%section
+
+  %h2 Provisioning Scripts
+
+  .left-align
+    In the
+    %code provisioning/bin/
+    folder are scripts that run the Ansible commands to
+    %strong bootstrap, configure, and deploy
+    the application to the appropriate environment, which makes it really simple:
 
   %pre
     %code.bash
@@ -51,3 +92,120 @@ layout: slide
           --user deploy --ask-vault-pass \
           --extra-vars '{"app_name":"xxx"}' -vvvv \
           provisioning/deploy.yml
+
+%section
+  %h3
+    The meat is in
+    %code provisioning/deploy.yml
+
+  %pre.fragment.tiny
+    %code.yaml
+      :preserve
+        {%raw%}---
+        - hosts: webservers
+
+          roles:
+            - internal/deploy
+
+          tasks:
+            - set_fact: this_release_ts={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
+            - set_fact: this_release_path={{ releases_path }}/{{ this_release_ts }}
+
+            - stat: path={{ current_release_path }}
+              register: current_dir
+
+            - debug: msg="New release path {{ this_release_path }}"
+
+            - debug: msg="current_dir exists? {{ current_dir.stat.exists }}"
+
+            - name: display maintenance page
+              copy:
+                src: roles/internal/deploy/files/maintenance.html
+                dest: "{{ current_release_path }}/maintenance.html"
+                force: yes
+              when: current_dir.stat.exists == True
+
+            - name: stop sidekiq
+              sudo: true
+              service: name=sidekiq-workers state=stopped
+              when: current_dir.stat.exists == True
+
+            - name: stop puma
+              sudo: true
+              service: name=puma state=stopped args="app={{ current_release_path }}"
+              when: current_dir.stat.exists == True
+
+            - name: create new release dir
+              file: path={{ this_release_path }} state=directory
+
+            - name: update code
+              git: repo={{ git_url }} dest={{ this_release_path }} version={{ git_version }} accept_hostkey=yes
+              register: git
+
+            - debug: msg='Updated repo from {{ git.before }} to {{ git.after }}'
+
+            - name: create shared dir
+              file: path={{ shared_path }} state=directory
+
+            - name: create shared sub-dirs
+              file: path={{ shared_path }}/{{ item }} state=directory
+              with_items:
+                - log
+                - tmp
+                - tmp/puma
+
+            - name: create config files
+              template:
+                src: "roles/internal/deploy/templates/{{ item }}.j2"
+                dest: "{{ this_release_path }}/{{ item }}"
+                force: yes
+              with_items:
+                - config/database.yml
+                - config/secrets.yml
+                - config/puma.rb
+
+            - name: symlink shared files
+              file:
+                src: "{{ shared_path }}/{{ item }}"
+                dest: "{{ this_release_path }}/{{ item }}"
+                state: link
+                force: yes
+              with_items:
+                - log/{{ rails_env }}.log
+                - log/sidekiq.log
+
+            - name: install gems
+              command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'
+              args:
+                chdir: '{{ this_release_path }}'
+
+            - name: precompile assets
+              command: "{{ ruby_path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
+              environment:
+                RAILS_ENV: '{{ rails_env }}'
+
+            - name: migrate database
+              command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"
+              environment:
+                RAILS_ENV: '{{ rails_env }}'
+
+            - name: remove maintenance page
+              file: path={{ current_release_path }}/maintenance.html state=absent force=true
+
+            - name: symlink new release
+              file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
+
+            - name: start puma
+              sudo: true
+              service: name=puma state=started args="app={{ current_release_path }}"
+
+            - name: start sidekiq
+              sudo: true
+              service: name=sidekiq-workers state=started
+
+            - name: cleanup
+              shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"
+              args:
+                chdir: '{{ releases_path }}'
+
+        {%endraw%}
