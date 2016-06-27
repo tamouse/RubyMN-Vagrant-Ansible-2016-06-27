@@ -54,10 +54,10 @@
 <section class=''>
   <h2>The Situation</h2>
 <ul>
-  <li>already using Vagrant extensively</li>
-  <li class='fragment'>I had built a Vagrant + Ansible development setup for 2 projects</li>
-  <li class='fragment'>starting several new Rails-backed projects</li>
   <li class='fragment'>wanted a modern approach to bootstrapping, provisioning, and deployment</li>
+  <li class='fragment'>starting several new Rails-backed projects</li>
+  <li class='fragment'>already using Vagrant extensively</li>
+  <li class='fragment'>I had built a Vagrant + Ansible development setup for 2 projects</li>
   <li class='fragment'>Ansible is pretty easy to learn</li>
 </ul>
 
@@ -182,8 +182,8 @@ rails_template.rb.tt</code></pre>
 
 <section class=''>
   <h2>Modifying the Vagrantfile</h2>
-<div class='left-align'>The following is added to the `dev` configuration section to make Ansible work locally:</div>
-<pre><code class='ruby'>dev.vm.provision :ansible do |a|&#x000A;  a.playbook = "provisioning/configure.yml"&#x000A;  a.inventory_path =&#x000A;    "provisioning/inventories/development"&#x000A;  a.verbose = "vvvv"&#x000A;  a.sudo = true&#x000A;end</code></pre>
+<div class='left-align'>The following is added to the provisioning configuration section to make Ansible work locally:</div>
+<pre><code class='ruby'>config.vm.provision :ansible do |ansible|&#x000A;  ansible.playbook = "provisioning/configure.yml"&#x000A;  ansible.groups = {&#x000A;    'webservers' => ['development'],&#x000A;    'databases'  => ['development'],&#x000A;    'development:children' => ['webservers', 'databases']&#x000A;  }&#x000A;  ansible.verbose = "vvvv"&#x000A;  ansible.sudo = true&#x000A;  ansible.extra_vars = {&#x000A;    app_name: "<%= @app_name %>"&#x000A;  }&#x000A;end</code></pre>
 
 </section>
 
@@ -203,7 +203,7 @@ rails_template.rb.tt</code></pre>
 <section>
   <h2 id="bin-directory"><code>bin/</code> directory</h2>
   
-  <p>The <code>bin/</code> directory contains shell scripts to make working out to the remove environments simple:</p>
+  <p>The <code>bin/</code> directory contains shell scripts to make higher environments simpler:</p>
   
   <ul>
     <li><code>bootstrap</code> - set up initial servers environment, sshd, etc</li>
